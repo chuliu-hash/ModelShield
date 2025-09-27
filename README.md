@@ -1,60 +1,60 @@
-# ModelShield
+# ModelShield 项目
 
-**Code and datasets for our paper: [ModelShield: Adaptive and Robust Watermark Against Model Extraction Attacks](https://arxiv.org/abs/2405.02365)**
-
----
-
-## Overview
-
-ModelShield provides a framework for generating, embedding, and verifying watermarks in language models to protect intellectual property against model extraction attacks. This repository includes code for:
-- Watermark generation and verification.
-- Training imitation models with watermarked data and Generating imitation model’s output.
-- Supporting datasets for experimentation.
+**本代码库及数据集对应论文: [ModelShield: 针对模型提取攻击的自适应鲁棒水印方案](https://arxiv.org/abs/2405.02365)**
 
 ---
 
-## Dependencies
+## 项目概述
 
-The environment setup is required only during the model training phase. Please refer to the [requirements file](https://github.com/amaoku/ModelShield/blob/master/Imitation_Model_training/train/requirements.txt) for the necessary dependencies.
+ModelShield 提供了一套完整的框架，用于在语言模型中生成、嵌入和验证水印，以防范模型提取攻击对知识产权的侵害。本代码库包含以下核心功能：
+- 水印生成与验证系统
+- 使用含水印数据训练模仿模型及生成模仿模型输出
+- 实验支持数据集
+
+---
+
+## 环境依赖
+
+环境配置仅在模型训练阶段需要。具体依赖项请参见[requirements文件](https://github.com/amaoku/ModelShield/blob/master/Imitation_Model_training/train/requirements.txt)。
 
 ---
 
-## Stages
+## 实施流程
 
-### 1. **Watermark Generation**
-We utilize system-level instructions to guide watermark generation in language models, ensuring seamless integration and high robustness. (need API-KEY for different LMaaS)
+### 1. **水印生成阶段**
+采用系统级指令引导语言模型生成水印，确保无缝集成与高鲁棒性（需不同LMaaS平台的API-KEY）
 
-### 2. **Imitation Model Training**
-Fine-tune imitation models with watermarked data to simulate model extraction attacks. 
+### 2. **模仿模型训练**
+使用含水印数据微调模仿模型，模拟模型提取攻击场景
 
-We base our training and fine-tuning on the [BELLE GitHub project](https://github.com/LianjiaTech/BELLE). Key features include:
-- **Full fine-tuning** and **LoRA fine-tuning** support.
-- Flexibility to integrate your own fine-tuning methods.
-- Configuration options available in the `config` directory (e.g., model base, fine-tuning epochs, batch size, learning rate, and LoRA usage).
+本模块基于[BELLE开源项目](https://github.com/LianjiaTech/BELLE)实现，主要特性包括：
+- 支持**全参数微调**和**LoRA微调**
+- 可灵活集成自定义微调方法
+- 配置文件位于`config`目录（可设置基础模型、微调轮次、批大小、学习率及LoRA参数）
 
-### 3. **Watermark Verification**
-We provide two methods for verifying embedded watermarks:
-1. **Rapid Verification**: Quickly detect the presence of a watermark based on texts.
-2. **Detailed Verification**: Need comparison with legimate model and base model.
-   
----
-
-## Datasets
-
-The following datasets are used in our experiments:
-- **HC3**: A dataset for language model imitation analysis.
-- **WILD**: A dataset for evaluating robustness in diverse scenarios.
+### 3. **水印验证阶段**
+提供两种水印验证方法：
+1. **快速验证**：基于文本快速检测水印存在
+2. **详细验证**：需与原始模型及基础模型进行对比分析
 
 ---
-## Usage
-1. 1 Generate watermarked data from the victim model (See readme in Watermark Generation)
-2. 2 Simulate the model extraction attack (See readme in Imitation Model training)
-3. 3 Verify the watermark (See readme in Watermark Verification)
+
+## 实验数据集
+
+本实验使用以下基准数据集：
+- **HC3**：语言模型模仿分析专用数据集
+- **WILD**：多场景鲁棒性评估数据集
 
 ---
-## Citation
+## 使用指南
+1. 从受害模型生成含水印数据（参见Watermark Generation目录说明）
+2. 模拟模型提取攻击（参见Imitation Model training目录说明）
+3. 执行水印验证（参见Watermark Verification目录说明）
 
-If you find this work useful in your research, please consider citing our paper:
+---
+## 引用文献
+
+如果您的研究工作受益于本项目，请引用我们的论文：
 
 ```bibtex
 @article{modelshield,
@@ -63,3 +63,4 @@ If you find this work useful in your research, please consider citing our paper:
   journal={arXiv preprint arXiv:2405.02365},
   year={2024}
 }
+```

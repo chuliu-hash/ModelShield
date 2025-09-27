@@ -1,39 +1,41 @@
-# README
+# 项目说明文档
 
-## Overview
+## 概述
 
-This repository is designed to facilitate fine-tuning language models and performing inference to generate outputs embedded with watermarks. The main functionality is organized under the `train` directory, which includes scripts and configurations necessary for both fine-tuning and watermarking-based generation tasks.
+本代码库旨在简化语言模型的微调过程，并支持生成带有水印的文本输出。核心功能集中在`train`目录下，包含模型微调和水印生成任务所需的脚本与配置文件。
 
-## Features
+## 功能特性
 
-1. **Fine-Tuning Models**  
-   The fine-tuning process is highly configurable and can be adjusted to suit various experimental needs. The configurations for fine-tuning are managed through the `config` directory, where you can set parameters such as:
-   - **model_name_or_path**: Specify the pre-trained language model to use as the foundation for fine-tuning.
-   - **num_epochss**: Define the total training cycles.
-   - **batch_size**: Adjust the size of batches for training.
-   - **learning_rate**: Customize the learning rate for optimization.
-   - **LoRA CONFIGS**: Enable or disable the usage of Low-Rank Adaptation for parameter-efficient fine-tuning (see lora_config_llama.json).
+1. **模型微调**  
+   提供高度可配置的微调流程，支持多种实验需求。通过`config`目录下的配置文件可调整以下参数：
+   - **model_name_or_path**: 指定作为微调基础的预训练语言模型
+   - **num_epochs**: 设置训练周期总数
+   - **batch_size**: 调整训练批次大小
+   - **learning_rate**: 自定义优化器学习率
+   - **LoRA配置**: 启用/禁用参数高效微调的低秩自适应技术(参见lora_config_llama.json)
 
-   The output of the fine-tuning process will be a trained model saved in the specified directory.
+   微调完成后，训练好的模型将保存至指定目录。
 
-2. **Generating Watermarked Text**  
-   The fine-tuned model can be used for inference to generate text outputs with embedded watermarks. To perform this task:
-   - Specify the path to the fine-tuned model.
-   - Provide the input `query` dataset for the model to generate text responses.
+2. **水印文本生成**  
+   使用微调后的模型进行推理，生成带有嵌入式水印的文本输出。执行该任务需要：
+   - 指定微调模型的存储路径
+   - 提供用于生成文本响应的输入`query`数据集
 
-   The generated outputs will include the desired watermarked content.
+   最终输出结果将包含所需的水印内容。
 
-## Directory Structure
+## 目录结构
 
-- **`train/`**: Contains scripts for fine-tuning models and generating watermarked outputs.
-- **`configs/`**: Includes configuration files for fine-tuning settings such as model architecture, training parameters, and output specifications.
+- **`train/`**: 存放模型微调和水印生成的执行脚本
+- **`configs/`**: 包含模型架构、训练参数和输出规格等配置文件
 
-## How to Use
+## 使用指南
 
-### Fine-Tuning a Model
-1. Navigate to the `configs/` directory and edit the appropriate configuration file:
-   - Specify the base model.
-   - Adjust training parameters like epochs, batch size, learning rate, and LoRA usage.
-2. Run the fine-tuning script from the `train/` directory:
+### 模型微调步骤
+1. 进入`configs/`目录编辑配置文件：
+   - 指定基础模型
+   - 调整训练周期、批次大小、学习率等参数
+   - 配置LoRA选项
+2. 从`train/`目录运行微调脚本：
    ```bash
-   python train.py --model_config_file/<your_config_file>.json 
+   python train.py --model_config_file/<your_config_file>.json
+```
