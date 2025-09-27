@@ -232,7 +232,7 @@ def train(
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("--model_config_file", type=str,default='config/llama2.json')
+    parser.add_argument("--model_config_file", type=str,default='./config/llama2.json')
     parser.add_argument("--deepspeed", type=str, help="deepspeed config")
     parser.add_argument("--resume_from_checkpoint", action="store_true", default=False)
     parser.add_argument("--lora_hyperparams_file", default="", type=str, help="Provide it when use_lora=True")
