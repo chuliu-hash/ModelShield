@@ -1,12 +1,28 @@
+─────────────────────────────── Traceback (most recent call last) ────────────────────────────────╮
+│ /usr/local/anaconda3/.conda/envs/modelshield/lib/python3.9/site-packages/transformers/tokenizati │
+│ on_utils_base.py:717 in convert_to_tensors                                                       │
+│                                                                                                  │
+│    714 │   │   │   │   │   value = [value]                                                       │
+│    715 │   │   │   │                                                                             │
+│    716 │   │   │   │   if not is_tensor(value):                                                  │
+│ ❱  717 │   │   │   │   │   tensor = as_tensor(value)                                             │
+│    718 │   │   │   │   │                                                                         │
+│    719 │   │   │   │   │   # Removing this for now in favor of controlling the shape with `prep  │
+│    720 │   │   │   │   │   # # at-least2d                                                        │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+ValueError: too many dimensions 'str'
+
+The above exception was the direct cause of the following exception:
+
 ╭─────────────────────────────── Traceback (most recent call last) ────────────────────────────────╮
 │ /home/xuzhen/ModelShield-master/Imitation_Model_training/train/finetune_imitation_model_my.py:24 │
-│ 2 in <module>                                                                                    │
+│ 8 in <module>                                                                                    │
 │                                                                                                  │
-│   239 │   parser.add_argument("--local_rank", type=int)                                          │
-│   240 │   # parser.add_argument("--action", type=str)                                            │
-│   241 │   args = parser.parse_args()                                                             │
-│ ❱ 242 │   fire.Fire(train)                                                                       │
-│   243                                                                                            │
+│   245 │   parser.add_argument("--local_rank", type=int)                                          │
+│   246 │   # parser.add_argument("--action", type=str)                                            │
+│   247 │   args = parser.parse_args()                                                             │
+│ ❱ 248 │   fire.Fire(train)                                                                       │
+│   249                                                                                            │
 │                                                                                                  │
 │ /usr/local/anaconda3/.conda/envs/modelshield/lib/python3.9/site-packages/fire/core.py:141 in     │
 │ Fire                                                                                             │
@@ -41,16 +57,16 @@
 │   693   if treatment == 'class':                                                                 │
 │   694 │   action = trace.INSTANTIATED_CLASS                                                      │
 │                                                                                                  │
-│ /home/xuzhen/ModelShield-master/Imitation_Model_training/train/finetune_imitation_model_my.py:21 │
-│ 8 in train                                                                                       │
+│ /home/xuzhen/ModelShield-master/Imitation_Model_training/train/finetune_imitation_model_my.py:22 │
+│ 4 in train                                                                                       │
 │                                                                                                  │
-│   215 │   if torch.__version__ >= "2" and sys.platform != "win32":                               │
-│   216 │   │   model = torch.compile(model)                                                       │
-│   217 │   print("trainer.train")                                                                 │
-│ ❱ 218 │   trainer.train(resume_from_checkpoint = args.resume_from_checkpoint)                    │
-│   219 │   logger.info("Save checkpointing...")                                                   │
-│   220 │                                                                                          │
-│   221 │   model.save_pretrained(output_dir)                                                      │
+│   221 │   if torch.__version__ >= "2" and sys.platform != "win32":                               │
+│   222 │   │   model = torch.compile(model)                                                       │
+│   223 │   print("trainer.train")                                                                 │
+│ ❱ 224 │   trainer.train(resume_from_checkpoint = args.resume_from_checkpoint)                    │
+│   225 │   logger.info("Save checkpointing...")                                                   │
+│   226 │                                                                                          │
+│   227 │   model.save_pretrained(output_dir)                                                      │
 │                                                                                                  │
 │ /usr/local/anaconda3/.conda/envs/modelshield/lib/python3.9/site-packages/transformers/trainer.py │
 │ :1662 in train                                                                                   │
@@ -64,71 +80,91 @@
 │   1665 │   │   │   trial=trial,                                                                  │
 │                                                                                                  │
 │ /usr/local/anaconda3/.conda/envs/modelshield/lib/python3.9/site-packages/transformers/trainer.py │
-│ :1991 in _inner_training_loop                                                                    │
+│ :1899 in _inner_training_loop                                                                    │
 │                                                                                                  │
-│   1988 │   │   │   │   │   │   │   xm.optimizer_step(self.optimizer)                             │
-│   1989 │   │   │   │   │   elif self.do_grad_scaling:                                            │
-│   1990 │   │   │   │   │   │   scale_before = self.scaler.get_scale()                            │
-│ ❱ 1991 │   │   │   │   │   │   self.scaler.step(self.optimizer)                                  │
-│   1992 │   │   │   │   │   │   self.scaler.update()                                              │
-│   1993 │   │   │   │   │   │   scale_after = self.scaler.get_scale()                             │
-│   1994 │   │   │   │   │   │   optimizer_was_run = scale_before <= scale_after                   │
+│   1896 │   │   │   │   rng_to_sync = True                                                        │
+│   1897 │   │   │                                                                                 │
+│   1898 │   │   │   step = -1                                                                     │
+│ ❱ 1899 │   │   │   for step, inputs in enumerate(epoch_iterator):                                │
+│   1900 │   │   │   │   total_batched_samples += 1                                                │
+│   1901 │   │   │   │   if rng_to_sync:                                                           │
+│   1902 │   │   │   │   │   self._load_rng_state(resume_from_checkpoint)                          │
 │                                                                                                  │
-│ /usr/local/anaconda3/.conda/envs/modelshield/lib/python3.9/site-packages/torch/cuda/amp/grad_sca │
-│ ler.py:341 in step                                                                               │
+│ /usr/local/anaconda3/.conda/envs/modelshield/lib/python3.9/site-packages/torch/utils/data/datalo │
+│ ader.py:628 in __next__                                                                          │
 │                                                                                                  │
-│   338 │   │                                                                                      │
-│   339 │   │   assert len(optimizer_state["found_inf_per_device"]) > 0, "No inf checks were rec   │
-│   340 │   │                                                                                      │
-│ ❱ 341 │   │   retval = self._maybe_opt_step(optimizer, optimizer_state, *args, **kwargs)         │
-│   342 │   │                                                                                      │
-│   343 │   │   optimizer_state["stage"] = OptState.STEPPED                                        │
-│   344                                                                                            │
+│    625 │   │   │   if self._sampler_iter is None:                                                │
+│    626 │   │   │   │   # TODO(https://github.com/pytorch/pytorch/issues/76750)                   │
+│    627 │   │   │   │   self._reset()  # type: ignore[call-arg]                                   │
+│ ❱  628 │   │   │   data = self._next_data()                                                      │
+│    629 │   │   │   self._num_yielded += 1                                                        │
+│    630 │   │   │   if self._dataset_kind == _DatasetKind.Iterable and \                          │
+│    631 │   │   │   │   │   self._IterableDataset_len_called is not None and \                    │
 │                                                                                                  │
-│ /usr/local/anaconda3/.conda/envs/modelshield/lib/python3.9/site-packages/torch/cuda/amp/grad_sca │
-│ ler.py:288 in _maybe_opt_step                                                                    │
+│ /usr/local/anaconda3/.conda/envs/modelshield/lib/python3.9/site-packages/torch/utils/data/datalo │
+│ ader.py:671 in _next_data                                                                        │
 │                                                                                                  │
-│   285 │   def _maybe_opt_step(self, optimizer, optimizer_state, *args, **kwargs):                │
-│   286 │   │   retval = None                                                                      │
-│   287 │   │   if not sum(v.item() for v in optimizer_state["found_inf_per_device"].values()):    │
-│ ❱ 288 │   │   │   retval = optimizer.step(*args, **kwargs)                                       │
-│   289 │   │   return retval                                                                      │
-│   290 │                                                                                          │
-│   291 │   def step(self, optimizer, *args, **kwargs):                                            │
+│    668 │                                                                                         │
+│    669 │   def _next_data(self):                                                                 │
+│    670 │   │   index = self._next_index()  # may raise StopIteration                             │
+│ ❱  671 │   │   data = self._dataset_fetcher.fetch(index)  # may raise StopIteration              │
+│    672 │   │   if self._pin_memory:                                                              │
+│    673 │   │   │   data = _utils.pin_memory.pin_memory(data, self._pin_memory_device)            │
+│    674 │   │   return data                                                                       │
 │                                                                                                  │
-│ /usr/local/anaconda3/.conda/envs/modelshield/lib/python3.9/site-packages/torch/optim/lr_schedule │
-│ r.py:68 in wrapper                                                                               │
+│ /usr/local/anaconda3/.conda/envs/modelshield/lib/python3.9/site-packages/torch/utils/data/_utils │
+│ /fetch.py:61 in fetch                                                                            │
 │                                                                                                  │
-│     65 │   │   │   │   instance = instance_ref()                                                 │
-│     66 │   │   │   │   instance._step_count += 1                                                 │
-│     67 │   │   │   │   wrapped = func.__get__(instance, cls)                                     │
-│ ❱   68 │   │   │   │   return wrapped(*args, **kwargs)                                           │
-│     69 │   │   │                                                                                 │
-│     70 │   │   │   # Note that the returned function here is no longer a bound method,           │
-│     71 │   │   │   # so attributes like `__func__` and `__self__` no longer exist.               │
+│   58 │   │   │   │   data = [self.dataset[idx] for idx in possibly_batched_index]                │
+│   59 │   │   else:                                                                               │
+│   60 │   │   │   data = self.dataset[possibly_batched_index]                                     │
+│ ❱ 61 │   │   return self.collate_fn(data)                                                        │
+│   62                                                                                             │
 │                                                                                                  │
-│ /usr/local/anaconda3/.conda/envs/modelshield/lib/python3.9/site-packages/torch/optim/optimizer.p │
-│ y:140 in wrapper                                                                                 │
+│ /usr/local/anaconda3/.conda/envs/modelshield/lib/python3.9/site-packages/transformers/data/data_ │
+│ collator.py:586 in __call__                                                                      │
 │                                                                                                  │
-│   137 │   │   │   │   obj, *_ = args                                                             │
-│   138 │   │   │   │   profile_name = "Optimizer.step#{}.step".format(obj.__class__.__name__)     │
-│   139 │   │   │   │   with torch.autograd.profiler.record_function(profile_name):                │
-│ ❱ 140 │   │   │   │   │   out = func(*args, **kwargs)                                            │
-│   141 │   │   │   │   │   obj._optimizer_step_code()                                             │
-│   142 │   │   │   │   │   return out                                                             │
-│   143                                                                                            │
+│    583 │   │   │   │   else:                                                                     │
+│    584 │   │   │   │   │   feature["labels"] = np.concatenate([remainder, feature["labels"]]).a  │
+│    585 │   │                                                                                     │
+│ ❱  586 │   │   features = self.tokenizer.pad(                                                    │
+│    587 │   │   │   features,                                                                     │
+│    588 │   │   │   padding=self.padding,                                                         │
+│    589 │   │   │   max_length=self.max_length,                                                   │
 │                                                                                                  │
-│ /usr/local/anaconda3/.conda/envs/modelshield/lib/python3.9/site-packages/transformers/optimizati │
-│ on.py:436 in step                                                                                │
+│ /usr/local/anaconda3/.conda/envs/modelshield/lib/python3.9/site-packages/transformers/tokenizati │
+│ on_utils_base.py:3035 in pad                                                                     │
 │                                                                                                  │
-│   433 │   │   │   │   │   # Exponential moving average of gradient values                        │
-│   434 │   │   │   │   │   state["exp_avg"] = torch.zeros_like(p.data)                            │
-│   435 │   │   │   │   │   # Exponential moving average of squared gradient values                │
-│ ❱ 436 │   │   │   │   │   state["exp_avg_sq"] = torch.zeros_like(p.data)                         │
-│   437 │   │   │   │                                                                              │
-│   438 │   │   │   │   exp_avg, exp_avg_sq = state["exp_avg"], state["exp_avg_sq"]                │
-│   439 │   │   │   │   beta1, beta2 = group["betas"]                                              │
+│   3032 │   │   │   │   │   batch_outputs[key] = []                                               │
+│   3033 │   │   │   │   batch_outputs[key].append(value)                                          │
+│   3034 │   │                                                                                     │
+│ ❱ 3035 │   │   return BatchEncoding(batch_outputs, tensor_type=return_tensors)                   │
+│   3036 │                                                                                         │
+│   3037 │   def create_token_type_ids_from_sequences(                                             │
+│   3038 │   │   self, token_ids_0: List[int], token_ids_1: Optional[List[int]] = None             │
+│                                                                                                  │
+│ /usr/local/anaconda3/.conda/envs/modelshield/lib/python3.9/site-packages/transformers/tokenizati │
+│ on_utils_base.py:210 in __init__                                                                 │
+│                                                                                                  │
+│    207 │   │                                                                                     │
+│    208 │   │   self._n_sequences = n_sequences                                                   │
+│    209 │   │                                                                                     │
+│ ❱  210 │   │   self.convert_to_tensors(tensor_type=tensor_type, prepend_batch_axis=prepend_batc  │
+│    211 │                                                                                         │
+│    212 │   @property                                                                             │
+│    213 │   def n_sequences(self) -> Optional[int]:                                               │
+│                                                                                                  │
+│ /usr/local/anaconda3/.conda/envs/modelshield/lib/python3.9/site-packages/transformers/tokenizati │
+│ on_utils_base.py:733 in convert_to_tensors                                                       │
+│                                                                                                  │
+│    730 │   │   │   │   │   │   "Unable to create tensor returning overflowing tokens of differe  │
+│    731 │   │   │   │   │   │   "Please see if a fast version of this tokenizer is available to   │
+│    732 │   │   │   │   │   ) from e                                                              │
+│ ❱  733 │   │   │   │   raise ValueError(                                                         │
+│    734 │   │   │   │   │   "Unable to create tensor, you should probably activate truncation an  │
+│    735 │   │   │   │   │   " 'padding=True' 'truncation=True' to have batched tensors with the   │
+│    736 │   │   │   │   │   f" features (`{key}` in this case) have excessive nesting (inputs ty  │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
-OutOfMemoryError: CUDA out of memory. Tried to allocate 64.00 MiB (GPU 0; 23.69 GiB total capacity; 21.82 GiB already allocated; 3.69 MiB free; 23.31 GiB reserved in total by PyTorch) 
-If reserved memory is >> allocated memory try setting max_split_size_mb to avoid fragmentation.  See documentation for Memory Management and PYTORCH_CUDA_ALLOC_CONF
-  0%|
+ValueError: Unable to create tensor, you should probably activate truncation and/or padding with 'padding=True' 'truncation=True' to have batched tensors with the same length. Perhaps 
+your features (`sentence` in this case) have excessive nesting (inputs type `list` where type `int` is expected).
+  0%|                                                   
