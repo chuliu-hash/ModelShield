@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//d/Pythoncode/ModelShield-master/Imitation_Model_training/**)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

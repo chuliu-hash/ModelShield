@@ -1,0 +1,17 @@
+[
+	{
+		"id": 1,
+		"instruction": "请解释Python中的列表推导式",
+		"prediction": ""
+	},
+	{
+		"id": 2,
+		"instruction": "如何用Python读取CSV文件？",
+		"prediction": ""
+	},
+	{
+		"id": 3,
+		"instruction": "简述机器学习中的过拟合问题",
+		"prediction": ""
+	}
+]
