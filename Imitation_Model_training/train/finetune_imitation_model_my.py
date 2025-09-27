@@ -1,7 +1,7 @@
 import os
 os.environ["WANDB_DISABLED"] = "true"
 os.environ["CUDA_VISIBLE_DEVICES"] = "0,1,2,3"
-# os.environ["CUDA_LAUNCH_BLOCKING"] = "1"
+
 import sys
 from typing import List
 import argparse, logging
@@ -199,12 +199,7 @@ def train(
             load_best_model_at_end=True,
             ddp_find_unused_parameters=False if ddp else None,
             deepspeed=args.deepspeed if not args.use_lora else None,
-            group_by_length=group_by_length,
-            gradient_checkpointing=model_config.get('gradient_checkpointing', False),
-            dataloader_pin_memory=model_config.get('dataloader_pin_memory', True),
-            max_grad_norm=model_config.get('max_grad_norm', 1.0),
-            remove_unused_columns=False,
-            dataloader_num_workers=0
+            group_by_length=group_by_length
         ),
         data_collator=transformers.DataCollatorForSeq2Seq(
             tokenizer, pad_to_multiple_of=8, return_tensors="pt", padding=True
@@ -234,13 +229,14 @@ def train(
 
 
 
+
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
     parser.add_argument("--model_config_file", type=str,default='./config/llama2.json')
     parser.add_argument("--deepspeed", type=str, help="deepspeed config")
     parser.add_argument("--resume_from_checkpoint", action="store_true", default=False)
-    parser.add_argument("--lora_hyperparams_file", default="", type=str, help="Provide it when use_lora=True")
+    parser.add_argument("--lora_hyperparams_file", default="./config/lora_config_llama.json", type=str, help="Provide it when use_lora=True")
     parser.add_argument("--use_lora", action="store_true", default=False, help="Use lora")
     parser.add_argument("--local_rank", type=int)
     # parser.add_argument("--action", type=str)
