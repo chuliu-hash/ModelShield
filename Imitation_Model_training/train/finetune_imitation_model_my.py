@@ -1,6 +1,6 @@
 import os
 os.environ["WANDB_DISABLED"] = "true"
-os.environ["CUDA_VISIBLE_DEVICES"] = "0,1"
+os.environ["CUDA_VISIBLE_DEVICES"] = "0,1,2,3"
 # os.environ["CUDA_LAUNCH_BLOCKING"] = "1"
 import sys
 from typing import List
@@ -199,7 +199,12 @@ def train(
             load_best_model_at_end=True,
             ddp_find_unused_parameters=False if ddp else None,
             deepspeed=args.deepspeed if not args.use_lora else None,
-            group_by_length=group_by_length
+            group_by_length=group_by_length,
+            gradient_checkpointing=model_config.get('gradient_checkpointing', False),
+            dataloader_pin_memory=model_config.get('dataloader_pin_memory', True),
+            max_grad_norm=model_config.get('max_grad_norm', 1.0),
+            remove_unused_columns=False,
+            dataloader_num_workers=0
         ),
         data_collator=transformers.DataCollatorForSeq2Seq(
             tokenizer, pad_to_multiple_of=8, return_tensors="pt", padding=True
