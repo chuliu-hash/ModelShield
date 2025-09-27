@@ -90,6 +90,7 @@ def train(
         tokenizer = LlamaTokenizer.from_pretrained(model_name_or_path)
         # tokenizer.add_special_tokens({'pad_token': '[PAD]'})
         
+        
     elif model_type.lower() == "bloom":
         model = AutoModelForCausalLM.from_pretrained(
             model_name_or_path,
