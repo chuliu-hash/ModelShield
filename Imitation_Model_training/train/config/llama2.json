@@ -10,8 +10,8 @@
     "cutoff_len": 512,
     "val_set_size": 1000,
     "val_set_rate": 0.1,
-    "save_steps": 200,
-    "eval_steps": 200,
+    "save_steps": 100,
+    "eval_steps": 100,
     "warmup_steps": 10,
     "logging_steps": 10,
     "gradient_accumulation_steps": 16
