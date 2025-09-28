@@ -196,7 +196,7 @@ def train(
             eval_steps=model_config["eval_steps"] if val_set_size > 0 else None,
             save_steps=model_config["save_steps"],
             output_dir=output_dir,
-            save_total_limit=3,
+            save_total_limit=10,
             load_best_model_at_end=True,
             ddp_find_unused_parameters=False if ddp else None,
             deepspeed=args.deepspeed if not args.use_lora else None,
@@ -238,7 +238,7 @@ if __name__ == "__main__":
     parser.add_argument("--deepspeed", type=str, help="deepspeed config")
     parser.add_argument("--resume_from_checkpoint", action="store_true", default=False)
     parser.add_argument("--lora_hyperparams_file", default="./config/lora_config_llama.json", type=str, help="Provide it when use_lora=True")
-    parser.add_argument("--use_lora", action="store_true", default=True, help="Use lora")
+    parser.add_argument("--use_lora", action="store_true", default=False, help="Use lora")
     parser.add_argument("--local_rank", type=int)
     # parser.add_argument("--action", type=str)
     args = parser.parse_args()
