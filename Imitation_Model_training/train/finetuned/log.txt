@@ -1,17 +1,21 @@
-2025-09-27 19:57:16 - finetune_imitation_model_my.py[line:67] - INFO: args.__dict__ : {'model_config_file': './config/llama2.json', 'deepspeed': './config/deepspeed_config.json', 'resume_from_checkpoint': False, 'lora_hyperparams_file': './config/lora_config_llama.json', 'use_lora': False, 'local_rank': None}
-2025-09-27 19:57:16 - finetune_imitation_model_my.py[line:69] - INFO: model_type : Llama
-2025-09-27 19:57:16 - finetune_imitation_model_my.py[line:69] - INFO: model_name_or_path : ./Llama-2-7b-hf/
-2025-09-27 19:57:16 - finetune_imitation_model_my.py[line:69] - INFO: data_path : ./data/HC3_watermarked.json
-2025-09-27 19:57:16 - finetune_imitation_model_my.py[line:69] - INFO: output_dir : ./finetuned/
-2025-09-27 19:57:16 - finetune_imitation_model_my.py[line:69] - INFO: batch_size : 1
-2025-09-27 19:57:16 - finetune_imitation_model_my.py[line:69] - INFO: per_device_train_batch_size : 1
-2025-09-27 19:57:16 - finetune_imitation_model_my.py[line:69] - INFO: num_epochs : 5
-2025-09-27 19:57:16 - finetune_imitation_model_my.py[line:69] - INFO: learning_rate : 2e-05
-2025-09-27 19:57:16 - finetune_imitation_model_my.py[line:69] - INFO: cutoff_len : 512
-2025-09-27 19:57:16 - finetune_imitation_model_my.py[line:69] - INFO: val_set_size : 1000
-2025-09-27 19:57:16 - finetune_imitation_model_my.py[line:69] - INFO: val_set_rate : 0.1
-2025-09-27 19:57:16 - finetune_imitation_model_my.py[line:69] - INFO: save_steps : 1000
-2025-09-27 19:57:16 - finetune_imitation_model_my.py[line:69] - INFO: eval_steps : 1000
-2025-09-27 19:57:16 - finetune_imitation_model_my.py[line:69] - INFO: warmup_steps : 10
-2025-09-27 19:57:16 - finetune_imitation_model_my.py[line:69] - INFO: logging_steps : 10
-2025-09-27 19:57:16 - finetune_imitation_model_my.py[line:69] - INFO: gradient_accumulation_steps : 16
+2025-09-28 10:55:33 - finetune_imitation_model_my.py[line:67] - INFO: args.__dict__ : {'model_config_file': './config/llama2.json', 'deepspeed': None, 'resume_from_checkpoint': True, 'lora_hyperparams_file': './config/lora_config_llama.json', 'use_lora': True, 'local_rank': None}
+2025-09-28 10:55:33 - finetune_imitation_model_my.py[line:69] - INFO: model_type : Llama
+2025-09-28 10:55:33 - finetune_imitation_model_my.py[line:69] - INFO: model_name_or_path : ./Llama-2-7b-hf/
+2025-09-28 10:55:33 - finetune_imitation_model_my.py[line:69] - INFO: data_path : ./data/HC3_watermarked.json
+2025-09-28 10:55:33 - finetune_imitation_model_my.py[line:69] - INFO: output_dir : ./finetuned/
+2025-09-28 10:55:33 - finetune_imitation_model_my.py[line:69] - INFO: batch_size : 1
+2025-09-28 10:55:33 - finetune_imitation_model_my.py[line:69] - INFO: per_device_train_batch_size : 1
+2025-09-28 10:55:33 - finetune_imitation_model_my.py[line:69] - INFO: num_epochs : 5
+2025-09-28 10:55:33 - finetune_imitation_model_my.py[line:69] - INFO: learning_rate : 2e-05
+2025-09-28 10:55:33 - finetune_imitation_model_my.py[line:69] - INFO: cutoff_len : 512
+2025-09-28 10:55:33 - finetune_imitation_model_my.py[line:69] - INFO: val_set_size : 1000
+2025-09-28 10:55:33 - finetune_imitation_model_my.py[line:69] - INFO: val_set_rate : 0.1
+2025-09-28 10:55:33 - finetune_imitation_model_my.py[line:69] - INFO: save_steps : 200
+2025-09-28 10:55:33 - finetune_imitation_model_my.py[line:69] - INFO: eval_steps : 200
+2025-09-28 10:55:33 - finetune_imitation_model_my.py[line:69] - INFO: warmup_steps : 10
+2025-09-28 10:55:33 - finetune_imitation_model_my.py[line:69] - INFO: logging_steps : 10
+2025-09-28 10:55:33 - finetune_imitation_model_my.py[line:69] - INFO: gradient_accumulation_steps : 16
+2025-09-28 10:56:06 - finetune_imitation_model_my.py[line:154] - INFO: lora_r : 16
+2025-09-28 10:56:06 - finetune_imitation_model_my.py[line:154] - INFO: lora_alpha : 32
+2025-09-28 10:56:06 - finetune_imitation_model_my.py[line:154] - INFO: lora_dropout : 0.05
+2025-09-28 10:56:06 - finetune_imitation_model_my.py[line:154] - INFO: lora_target_modules : ['q_proj', 'k_proj', 'v_proj', 'o_proj', 'down_proj', 'gate_proj', 'up_proj']

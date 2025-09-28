@@ -71,7 +71,8 @@ def train(
         model_name_or_path
     ), "Please specify a --base_model, e.g. --base_model='decapoda-research/llama-7b-hf'"
 
-    gradient_accumulation_steps = model_config['batch_size'] // model_config['per_device_train_batch_size'] if "gradient_accumulation_steps" not in model_config else model_config['gradient_accumulation_steps']
+    gradient_accumulation_steps = model_config['batch_size'] // model_config['per_device_train_batch_size'] \
+        if "gradient_accumulation_steps" not in model_config else model_config['gradient_accumulation_steps']
 
     device_map = "auto"
     world_size = int(os.environ.get("WORLD_SIZE", 1))
@@ -237,7 +238,7 @@ if __name__ == "__main__":
     parser.add_argument("--deepspeed", type=str, help="deepspeed config")
     parser.add_argument("--resume_from_checkpoint", action="store_true", default=False)
     parser.add_argument("--lora_hyperparams_file", default="./config/lora_config_llama.json", type=str, help="Provide it when use_lora=True")
-    parser.add_argument("--use_lora", action="store_true", default=False, help="Use lora")
+    parser.add_argument("--use_lora", action="store_true", default=True, help="Use lora")
     parser.add_argument("--local_rank", type=int)
     # parser.add_argument("--action", type=str)
     args = parser.parse_args()
