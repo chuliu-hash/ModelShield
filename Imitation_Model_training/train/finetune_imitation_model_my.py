@@ -238,7 +238,7 @@ if __name__ == "__main__":
     parser.add_argument("--deepspeed", type=str, help="deepspeed config")
     parser.add_argument("--resume_from_checkpoint", action="store_true", default=False)
     parser.add_argument("--lora_hyperparams_file", default="./config/lora_config_llama.json", type=str, help="Provide it when use_lora=True")
-    parser.add_argument("--use_lora", action="store_true", default=True, help="Use lora")
+    parser.add_argument("--use_lora", action="store_true", default=False, help="Use lora")
     parser.add_argument("--local_rank", type=int)
     # parser.add_argument("--action", type=str)
     args = parser.parse_args()
