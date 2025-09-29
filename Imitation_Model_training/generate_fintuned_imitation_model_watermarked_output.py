@@ -1,6 +1,6 @@
 import sys, os
 # os.environ['CUDA_LAUNCH_BLOCKING'] = '1'
-os.environ["CUDA_VISIBLE_DEVICES"] = "3"
+os.environ["CUDA_VISIBLE_DEVICES"] = "0,1,2,3"
 import argparse
 import json
 import fire
@@ -187,12 +187,12 @@ def main(args):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Evaluate")
-    parser.add_argument("--dev_file", type=str)
-    parser.add_argument("--model_name_or_path", type=str, default="/path/to/your/fintuned/model", help="pretrained language model")
+    parser.add_argument("--dev_file", default="./train/data/HC3_watermarked.json", type=str)
+    parser.add_argument("--model_name_or_path", type=str, default="./train/Llama-2-7b-hf", help="pretrained language model")
     parser.add_argument("--max_length", type=int, default=2048, help="max length of dataset")
     parser.add_argument("--dev_batch_size", type=int, default=1, help="batch size")
-    parser.add_argument("--lora_weights", default="", type=str, help="use lora")
-    parser.add_argument("--output_file", type=str)
+    parser.add_argument("--lora_weights", default="./train/fintuned/adapter", type=str, help="use lora")
+    parser.add_argument("--output_file", default="./fintuned_prediction.json", type=str)
 
     args = parser.parse_args()
     batch_size = args.dev_batch_size
