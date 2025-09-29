@@ -55,4 +55,5 @@ logs/
 # Temporary files
 *.tmp
 *.temp
+*.jsonl
 CLAUDE.md
