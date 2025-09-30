@@ -181,8 +181,8 @@ def stat2(text,words):
 
 def avg_new(data):
     
-    qian_mean=np.mean(data[0:int(len(data)*0.99)])
-    hou_mean=np.mean(data[int(len(data)*0.99):])
+    qian_mean=np.mean(data[0:int(len(data)*0.98)])
+    hou_mean=np.mean(data[int(len(data)*0.98):])
     print(f"前99%的均值是{qian_mean},后1%的均值是{hou_mean}")
     print(f"前90%的均值是{np.mean(data[0:int(len(data)*0.90)])},后10%的均值是{np.mean(data[int(len(data)*0.90):])}")
 
@@ -224,24 +224,24 @@ for metric in metrics:
         newdata=[one[1] for one in data]
         newdata.sort()
         avg_new(newdata)
-        mean, std_dev, lower_bound, upper_bound = fit_gaussian_and_find_3sigma(newdata[int(0.99 * len(data)):])
+        mean, std_dev, lower_bound, upper_bound = fit_gaussian_and_find_3sigma(newdata[int(0.98 * len(data)):])
         print(f"Mean: {mean}, Standard Deviation: {std_dev}")
         print(f"3-Sigma Range: {lower_bound} to {upper_bound}")
         print("人类前1%点正态分布的均值")
-        mean, std_dev, lower_bound, upper_bound = fit_gaussian_and_find_3sigma(human_score[int(0.99 * len(newdata)):])
+        mean, std_dev, lower_bound, upper_bound = fit_gaussian_and_find_3sigma(human_score[int(0.98 * len(newdata)):])
         print(f"Mean: {mean}, Standard Deviation: {std_dev}")
         print(f"3-Sigma Range: {lower_bound} to {upper_bound}")
         
-        popmean =  0.13 # 零假设中的总体均值
+        popmean =  0.11 # 零假设中的总体均值
 
         # 执行单边单样本t检验，检验样本均值是否大于总体均值
-        t_stat, p_value = perform_one_sided_ttest_1samp(newdata[int(0.99 * len(data)):], popmean, alternative='greater')
+        t_stat, p_value = perform_one_sided_ttest_1samp(newdata[int(0.98 * len(data)):], popmean, alternative='greater')
 
         print("t-statistic:", t_stat)
         print("p-value:", p_value)
         
         # 执行单边t检验，检验样本1的均值是否大于样本2
-        # t_stat, p_value = perform_one_sided_ttest(newdata[int(0.99 * len(newdata)):], human_score[int(0.99 * len(newdata)):], alternative='greater')
+        # t_stat, p_value = perform_one_sided_ttest(newdata[int(0.98 * len(newdata)):], human_score[int(0.98 * len(newdata)):], alternative='greater')
 
         # print("t-statistic:", t_stat)
         # print("p-value:", p_value)

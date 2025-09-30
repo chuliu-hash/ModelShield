@@ -57,3 +57,4 @@ logs/
 *.temp
 *.jsonl
 CLAUDE.md
+.claude/
