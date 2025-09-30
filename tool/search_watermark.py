@@ -197,7 +197,7 @@ def main():
     """主函数"""
     # 文件路径
     watermarked_file = 'HC3_watermarked.json'
-    unwatermarked_file = 'HC3_unwatermarked.json'
+    unwatermarked_file = 'fintuned_prediction.json'
 
     try:
         print("=== 开始按位置处理水印词 ===")
