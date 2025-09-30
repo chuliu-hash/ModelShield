@@ -127,8 +127,8 @@ def generate_text(dev_data, batch_size, tokenizer, model, skip_special_tokens = 
             batch = dev_data[i:i+batch_size]
             batch_text = []
             for item in batch:
-                # input_text = "Human: " +item['sentence'] + "\n\nAssistant: " 
-                input_text =  item['sentence'] 
+                input_text = "Human: " +item['sentence'] + "\n\nAssistant: " 
+                # input_text =  item['sentence'] 
                 
                 batch_text.append(tokenizer.bos_token + input_text if tokenizer.bos_token!=None else input_text)
 
@@ -167,7 +167,7 @@ def generate_text(dev_data, batch_size, tokenizer, model, skip_special_tokens = 
                 input_text = input_text.replace(tokenizer.bos_token, "")
                 predict_text = output_texts[i][len(input_text):]
                 # res.append({"input":input_text,"predict":predict_text,"target":batch[i]["output"],"WMlabel":batch[i]["WMlabel"],"id":batch[i]["id"]})
-                res.append({"input":input_text,"predict":predict_text})
+                res.append({"id":i,"input":input_text,"predict":predict_text})
                 # res.append({"input":input_text,"predict":predict_text, "WMlabel": batch[i]["WMlabel"], "id": batch[i]["id"]})
                 with open(args.output_file,'w',encoding='utf-8') as f:
                     json.dump(res, f, ensure_ascii=False,indent=4)       
