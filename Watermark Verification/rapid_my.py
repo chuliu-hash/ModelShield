@@ -142,15 +142,15 @@ def fit_gaussian_and_find_3sigma(data):
 
 
 
-with open('data/data.json', 'r',encoding='utf-8') as f:
+with open('data/finetuned_llama2.json', 'r',encoding='utf-8') as f:
     data=json.load(f)
 
 
 wm_set=set()
 for sth in data:
-    wm_set.update(sth["Only_not_in_query_good_WM"])
+    wm_set.update(sth["watermark_words"])
 
-print(f"水印集合大小是{len(wm_set)}")
+print(f"水印集合大小是{len(wm_set)}\n")
     
 
 # for i in range(len(data)):
@@ -179,27 +179,26 @@ def stat2(text,words):
             continue
     return count,count2/(len(text)+10**(-6))
 
-def avg_new(data):
+# def avg_new(data):
     
-    qian_mean=np.mean(data[0:int(len(data)*0.98)])
-    hou_mean=np.mean(data[int(len(data)*0.98):])
-    print(f"前99%的均值是{qian_mean},后1%的均值是{hou_mean}")
-    print(f"前90%的均值是{np.mean(data[0:int(len(data)*0.90)])},后10%的均值是{np.mean(data[int(len(data)*0.90):])}")
+#     qian_mean=np.mean(data[:int(len(data)*0.80)])
+#     hou_mean=np.mean(data[int(len(data)*0.80):])
+#     print(f"前80%的均值是{qian_mean},后20%的均值是{hou_mean}")
 
 
 
-metrics=['Only_not_in_query_good_WM']
+metrics=['watermark_words']
 
 result={m:
             {
                 key:[]
-                for key in ["query", "human_answer", "prediction_WM",]  
+                for key in ["sentence", "human_answers", "prediction",]  
             }
         for m in metrics
         }
 
-for i in range(4000):
-    for  key in ["query","human_answer", "prediction_WM",]:
+for i in range(len(data)):
+    for  key in ["sentence", "human_answers", "prediction"]:
         try:
             text=data[i][key]
         except Exception as e:
@@ -211,8 +210,9 @@ for i in range(4000):
             result[metric][key].append(stat2(text,data[i][metric]))
             result[metric][key].sort()
 
-human_score=[one[1] for one in result["Only_not_in_query_good_WM"]["human_answer"]]
+human_score=[one[1] for one in result["watermark_words"]["human_answers"]]
 human_score.sort()
+
 for metric in metrics:
     for key in result[metric]:
         data=np.array(result[metric][key])
@@ -223,25 +223,21 @@ for metric in metrics:
         print(f"水印分数的均分{avg}")
         newdata=[one[1] for one in data]
         newdata.sort()
-        avg_new(newdata)
-        mean, std_dev, lower_bound, upper_bound = fit_gaussian_and_find_3sigma(newdata[int(0.98 * len(data)):])
+        mean, std_dev, lower_bound, upper_bound = fit_gaussian_and_find_3sigma(newdata)
         print(f"Mean: {mean}, Standard Deviation: {std_dev}")
         print(f"3-Sigma Range: {lower_bound} to {upper_bound}")
-        print("人类前1%点正态分布的均值")
-        mean, std_dev, lower_bound, upper_bound = fit_gaussian_and_find_3sigma(human_score[int(0.98 * len(newdata)):])
-        print(f"Mean: {mean}, Standard Deviation: {std_dev}")
-        print(f"3-Sigma Range: {lower_bound} to {upper_bound}")
+
         
-        popmean =  0.11 # 零假设中的总体均值
+        popmean =  0.005# 零假设中的总体均值
 
         # 执行单边单样本t检验，检验样本均值是否大于总体均值
-        t_stat, p_value = perform_one_sided_ttest_1samp(newdata[int(0.98 * len(data)):], popmean, alternative='greater')
+        t_stat, p_value = perform_one_sided_ttest_1samp(newdata, popmean, alternative='greater')
 
         print("t-statistic:", t_stat)
         print("p-value:", p_value)
         
         # 执行单边t检验，检验样本1的均值是否大于样本2
-        # t_stat, p_value = perform_one_sided_ttest(newdata[int(0.98 * len(newdata)):], human_score[int(0.98 * len(newdata)):], alternative='greater')
+        # t_stat, p_value = perform_one_sided_ttest(newdata[int(0.80 * len(newdata)):], human_score[int(0.80 * len(newdata)):], alternative='greater')
 
         # print("t-statistic:", t_stat)
         # print("p-value:", p_value)

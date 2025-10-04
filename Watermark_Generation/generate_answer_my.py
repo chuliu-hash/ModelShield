@@ -3,9 +3,9 @@ import json
 import os
 from time import sleep
 
-api_keys=["",]
-base_url=""
-filepath = "output/answers.json"
+api_keys=["sk-hVEye8BA2688bc89BCB2T3BLbKFJ1d342476887D45658Bbf",]
+base_url="https://c-z0-api-01.hash070.com/v1/chat/completions"
+filepath = "output/HC3_watermarked_zh.json"
 
 output = []
 max_id = 0
@@ -24,22 +24,19 @@ def read_list_from_file(file_path):
         lst = eval(f.read())
     return lst
 
-wildwind_data = read_list_from_file("input/questions.json")[max_id:]
+wildwind_data = read_list_from_file("input/HC3_watermarked_zh.json")[max_id:]
 
 cnt = 0
 
 for item in wildwind_data:
   
 
-    system_prompt = """You are a text generation model with watermarking capability.
-                    Follow these rules:
-                    1. Use some special words as watermarks in the generated texts.
-                    2. Output the watermark words and the answer in json format:{"answer": "...", "watermark_words": [...]}
-                    3. Watermark words must appear naturally in the answer"""
+    system_prompt = """我会问你一些问题，请你按照json的格式输出回答，格式如下:
+              {"answer": "..."}"""
 
 
     messages = [
-    {"role": "system", "content": system_prompt.strip()},  # 系统级水印指令
+    {"role": "system", "content": system_prompt.strip()},  # 系统级指令
     {"role": "user", "content": item["instruction"].strip()}     # 纯问题内容
     ]
 
@@ -55,13 +52,13 @@ for item in wildwind_data:
         
         if response.choices:
             answer_data = json.loads(response.choices[0].message.content)
-            print(f"Query:{item['instruction']}\nAnswer:{answer_data['answer']}\nWatermark Words:{answer_data['watermark_words']}\n")
+            print(f"Query:{item['sentence']}\nAnswer:{answer_data['answer']}\n")
             
             output.append({
                 "id": item["id"],
-                "query": item["instruction"],
-                "answer": answer_data["answer"],
-                "watermark_words": answer_data["watermark_words"],
+                "query": item["sentence"],
+                "prediction_noWM": answer_data["answer"],
+                "prediction_WM": item["prediction"],
             })
             
                 
@@ -72,7 +69,7 @@ for item in wildwind_data:
     finally:
         cnt += 1
 
-    sleep(5)
+    sleep(1)
 
     
 with open(filepath, "w", encoding='utf-8') as f:

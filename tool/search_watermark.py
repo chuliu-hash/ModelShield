@@ -61,7 +61,7 @@ def collect_unique_watermark_words(watermarked_file: str) -> List[str]:
 
 def find_watermarks_in_text(text: str, watermark_words: List[str]) -> List[str]:
     """
-    在文本中查找水印词
+    在文本中查找水印词（支持中文）
 
     Args:
         text: 待搜索的文本
@@ -73,21 +73,42 @@ def find_watermarks_in_text(text: str, watermark_words: List[str]) -> List[str]:
     if not text or not isinstance(text, str):
         return []
 
-    text_lower = text.lower()
     found_watermarks = []
 
     for word in watermark_words:
         if not word:
             continue
 
-        word_lower = word.lower()
-
-        # 使用正则表达式进行完整单词匹配
-        pattern = r'\b' + re.escape(word_lower) + r'\b'
-        if re.search(pattern, text_lower):
+        # 直接使用in操作符或re.search进行子串匹配
+        # 对于中文文本，直接查找子串即可
+        if word in text:
             found_watermarks.append(word)
 
     return found_watermarks
+
+def calculate_text_length(text: str) -> int:
+    """
+    计算文本长度（字符数）
+
+    Args:
+        text: 输入文本
+
+    Returns:
+        int: 文本字符数
+    """
+    return len(text) if text else 0
+
+def calculate_watermark_length(watermark_words: List[str]) -> int:
+    """
+    计算水印词总长度
+
+    Args:
+        watermark_words: 水印词列表
+
+    Returns:
+        int: 水印词总字符数
+    """
+    return sum(len(word) for word in watermark_words if word)
 
 def process_files_by_position(watermarked_file: str, unwatermarked_file: str) -> None:
     """
@@ -132,8 +153,17 @@ def process_files_by_position(watermarked_file: str, unwatermarked_file: str) ->
     min_length = min(len(watermarked_data), len(unwatermarked_data))
     print(f"将处理 {min_length} 条记录（取两个文件的最小长度）")
 
+    # Prediction统计
     total_watermarks_found = 0
     records_with_watermarks = 0
+    total_watermark_chars = 0
+    total_text_chars = 0
+
+    # Human answers统计
+    human_total_watermarks_found = 0
+    human_records_with_watermarks = 0
+    human_total_watermark_chars = 0
+    human_total_text_chars = 0
 
     for i in range(min_length):
         if not isinstance(unwatermarked_data[i], dict):
@@ -152,52 +182,95 @@ def process_files_by_position(watermarked_file: str, unwatermarked_file: str) ->
         else:
             position_watermark_words = []
 
-        # 获取prediction文本
+        # === 处理 Prediction ===
         prediction = unwatermarked_data[i].get('prediction', '')
+        text_length = calculate_text_length(prediction)
+        total_text_chars += text_length
 
-        # 在prediction中查找当前位置对应的水印词
+        # 在prediction中查找水印词
         if position_watermark_words and prediction:
             found_watermarks = find_watermarks_in_text(prediction, position_watermark_words)
         else:
             found_watermarks = []
 
-        # 更新watermark_words字段
-        unwatermarked_data[i]['watermark_words'] = found_watermarks
+        watermark_length = calculate_watermark_length(found_watermarks)
+        total_watermark_chars += watermark_length
 
         if found_watermarks:
             records_with_watermarks += 1
             total_watermarks_found += len(found_watermarks)
 
+        # === 处理 Human Answers ===
+        human_answers = unwatermarked_data[i].get('human_answers', [])
+
+        if human_answers and isinstance(human_answers, list):
+            # 将所有human_answers合并成一个文本
+            human_text = ' '.join(human_answers)
+            human_text_length = calculate_text_length(human_text)
+            human_total_text_chars += human_text_length
+
+            # 在human_answers中查找水印词
+            if position_watermark_words:
+                human_found_watermarks = find_watermarks_in_text(human_text, position_watermark_words)
+            else:
+                human_found_watermarks = []
+
+            human_watermark_length = calculate_watermark_length(human_found_watermarks)
+            human_total_watermark_chars += human_watermark_length
+
+            if human_found_watermarks:
+                human_records_with_watermarks += 1
+                human_total_watermarks_found += len(human_found_watermarks)
+
         if (i + 1) % 100 == 0:
             print(f"已处理 {i + 1} 条记录...")
 
-    print("处理完成，正在保存文件...")
+    print("处理完成...")
 
-    # 保存更新后的文件
-    try:
-        with open(unwatermarked_file, 'w', encoding='utf-8') as f:
-            json.dump(unwatermarked_data, f, ensure_ascii=False, indent=2)
+    # 计算平均水印密度
+    avg_watermark_density = (total_watermark_chars / total_text_chars * 100) if total_text_chars > 0 else 0.0
+    human_avg_watermark_density = (human_total_watermark_chars / human_total_text_chars * 100) if human_total_text_chars > 0 else 0.0
 
-        print(f"文件已保存: {unwatermarked_file}")
+    # 输出统计结果
+    print("\n" + "="*70)
+    print("=== Prediction (模型输出) 水印统计 ===")
+    print("="*70)
+    print(f"总记录数: {min_length}")
+    print(f"包含水印词的记录数: {records_with_watermarks}")
+    print(f"不包含水印词的记录数: {min_length - records_with_watermarks}")
+    print(f"水印词覆盖率: {records_with_watermarks / min_length * 100:.2f}%")
+    print(f"总共找到的水印词实例数: {total_watermarks_found}")
+    print(f"平均每条记录的水印词数: {total_watermarks_found / min_length:.2f}")
+    print(f"文本总字符数: {total_text_chars:,}")
+    print(f"水印词总字符数: {total_watermark_chars:,}")
+    print(f"平均水印密度: {avg_watermark_density:.4f}%")
 
-        # 输出统计结果
-        print("\n=== 处理结果统计 ===")
-        print(f"总记录数: {len(unwatermarked_data)}")
-        print(f"实际处理记录数: {min_length}")
-        print(f"包含水印词的记录数: {records_with_watermarks}")
-        print(f"不包含水印词的记录数: {min_length - records_with_watermarks}")
-        print(f"总共找到的水印词实例数: {total_watermarks_found}")
-        print(f"平均每条记录的水印词数: {total_watermarks_found / min_length:.2f}")
+    print("\n" + "="*70)
+    print("=== Human Answers (人类答案) 水印统计 ===")
+    print("="*70)
+    print(f"总记录数: {min_length}")
+    print(f"包含水印词的记录数: {human_records_with_watermarks}")
+    print(f"不包含水印词的记录数: {min_length - human_records_with_watermarks}")
+    print(f"水印词覆盖率: {human_records_with_watermarks / min_length * 100:.2f}%")
+    print(f"总共找到的水印词实例数: {human_total_watermarks_found}")
+    print(f"平均每条记录的水印词数: {human_total_watermarks_found / min_length:.2f}")
+    print(f"文本总字符数: {human_total_text_chars:,}")
+    print(f"水印词总字符数: {human_total_watermark_chars:,}")
+    print(f"平均水印密度: {human_avg_watermark_density:.4f}%")
 
-    except Exception as e:
-        print(f"保存文件时出错: {e}")
-        raise
+    print("\n" + "="*70)
+    print("=== 对比分析 ===")
+    print("="*70)
+    print(f"Prediction vs Human - 覆盖率差异: {(records_with_watermarks - human_records_with_watermarks) / min_length * 100:+.2f}%")
+    print(f"Prediction vs Human - 水印词数差异: {(total_watermarks_found - human_total_watermarks_found) / min_length:+.2f} 个/记录")
+    print(f"Prediction vs Human - 水印密度差异: {avg_watermark_density - human_avg_watermark_density:+.4f}%")
+    print("="*70)
 
 def main():
     """主函数"""
     # 文件路径
-    watermarked_file = 'HC3_watermarked.json'
-    unwatermarked_file = 'fintuned_prediction.json'
+    watermarked_file = '../Watermark_Generation/input/HC3_watermarked_zh.json'
+    unwatermarked_file = '../Watermark Verification/data/finetuned_output.json'
 
     try:
         print("=== 开始按位置处理水印词 ===")

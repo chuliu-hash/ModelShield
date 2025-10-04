@@ -1,0 +1,19 @@
+# LLaMA2 Fine-tuning Requirements
+# 核心依赖
+torch>=2.0.0
+transformers>=4.36.0
+accelerate>=0.25.0
+peft>=0.7.0  # 支持新旧版本，代码已做兼容处理
+datasets>=2.15.0
+
+# 训练优化
+bitsandbytes>=0.41.0
+scipy>=1.10.0
+sentencepiece>=0.1.99
+
+# 日志和监控
+tensorboard>=2.15.0
+wandb  # 可选
+
+# DeepSpeed (可选，用于大规模训练)
+# deepspeed>=0.12.0
