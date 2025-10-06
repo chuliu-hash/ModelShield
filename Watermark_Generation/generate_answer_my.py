@@ -3,8 +3,8 @@ import json
 import os
 from time import sleep
 
-api_keys=["sk-hVEye8BA2688bc89BCB2T3BLbKFJ1d342476887D45658Bbf",]
-base_url="https://c-z0-api-01.hash070.com/v1/chat/completions"
+api_keys=["",]
+base_url=""
 filepath = "output/HC3_watermarked_zh.json"
 
 output = []
