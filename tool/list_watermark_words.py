@@ -3,7 +3,7 @@
 """
 Watermark Words Processor Script
 处理JSON文件中watermark_words字段的Python脚本
-将逗号分隔的字符串转换为列表形式
+将逗号分隔的watermark_words字符串转换为列表形式
 """
 
 import json

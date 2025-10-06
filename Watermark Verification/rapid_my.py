@@ -142,7 +142,7 @@ def fit_gaussian_and_find_3sigma(data):
 
 
 
-with open('data/finetuned_llama2.json', 'r',encoding='utf-8') as f:
+with open('data/finetuned_llama2_merged.json', 'r',encoding='utf-8') as f:
     data=json.load(f)
 
 
@@ -192,13 +192,13 @@ metrics=['watermark_words']
 result={m:
             {
                 key:[]
-                for key in ["sentence", "human_answers", "prediction",]  
+                for key in ["human_answers", "prediction_nowm","prediction_wm"]  
             }
         for m in metrics
         }
 
 for i in range(len(data)):
-    for  key in ["sentence", "human_answers", "prediction"]:
+    for  key in ["human_answers", "prediction_nowm","prediction_wm"]:
         try:
             text=data[i][key]
         except Exception as e:

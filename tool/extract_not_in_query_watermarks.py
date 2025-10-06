@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-统计没有在查询sentence中出现的水印词watermark_words,写入新字段not_in_query_wm
+统计没有在查询sentence或human_answer中出现的水印词watermark_words,
+写入新字段not_in_query_wm和not_in_query_and_human
 """
 
 import json
